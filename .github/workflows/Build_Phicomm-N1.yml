@@ -156,7 +156,7 @@ jobs:
           **This is Temporary Firmware for Armvirt 64**
           ### 📒 固件信息
           - 💻 这是 ARMv8 底包，非完整固件，不可直刷
-          - 🚀 直刷固件点击此处跳转➦[${{ env.PRODUCT_NAME }}](https://github.com/djzng/OpenWrt/releases/tag/${{ env.PRODUCT_NAME }})即可下载
+          - 🚀 直刷固件点击此处跳转➦[${{ env.PRODUCT_NAME }}](https://github.com/zwrt/OpenWrt/releases/tag/${{ env.PRODUCT_NAME }})即可下载
           - ⚽ 固件源码: ${{ env.REPO_URL }}
           - 💝 源码分支: ${{ env.REPO_BRANCH }}
           ### 🧊 固件版本
@@ -201,12 +201,12 @@ jobs:
       uses: ophub/flippy-openwrt-actions@main
       if: (!cancelled())
       env:
-        OPENWRT_ARMVIRT: https://github.com/djzng/OpenWrt/releases/download/ROOTFS/openwrt-armvirt-64-generic-rootfs.tar.gz
+        OPENWRT_ARMVIRT: https://github.com/zwrt/OpenWrt/releases/download/ROOTFS/openwrt-armvirt-64-generic-rootfs.tar.gz
         PACKAGE_SOC: s905d
         WHOAMI: TIAmo
         OPENWRT_VER: ${{ github.event.inputs.openwrt_version }}
         DISTRIB_REVISION: ${OPENWRT_VER} (By @TIAmo build $(TZ=UTC-8 date "+%Y-%m-%d %H:%M"))
-        KERNEL_REPO_URL: https://github.com/djzng/kernel/releases/tag/kernel_stable
+        KERNEL_REPO_URL: https://github.com/zwrt/kernel/releases/tag/kernel_stable
         KERNEL_VERSION_NAME: 5.15.13
         KERNEL_AUTO_LATEST: true
         GZIP_IMGS: .gz
