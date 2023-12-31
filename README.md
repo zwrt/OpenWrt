@@ -3,7 +3,7 @@
 <p align="left"><img src="https://profile-counter.glitch.me/zwrt/count.svg" alt="zwrt :: Visitor's Count" /></p>
 <p align="center">
   <a href="https://github.com/djzng/OpenWrt">
-    <img src="./diy/action.jpg" alt="Logo" width="300" />
+    <img src="./diy/action.jpg" alt="Logo" width="350" />
   </a>
   <p align="center">
     <br />
