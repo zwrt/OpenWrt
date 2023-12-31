@@ -7,7 +7,7 @@
   </a>
   <p align="center">
     <br />
-    **👉 每日定时自动拉取Openwrt最新源码编译，自动发布到 <a href="https://github.com/zwrt/OpenWrt/releases">Releases</a> 👈**
+    👉 每日定时自动拉取Openwrt最新源码编译，自动发布到 <a href="https://github.com/zwrt/OpenWrt/releases">Releases</a> 👈
     <br />
     <br />
     <a href="https://github.com/zwrt/OpenWrt"><strong>探索本项目的文档 »</strong></a>
