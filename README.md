@@ -3,7 +3,7 @@
 <p align="left"><img src="https://profile-counter.glitch.me/zwrt/count.svg" alt="zwrt :: Visitor's Count" /></p>
 <p align="center">
   <a href="https://github.com/djzng/OpenWrt">
-    <img src="./diy/action.jpg" alt="Logo" width="200" />
+    <img src="./diy/action.jpg" alt="Logo" width="250" />
   </a>
   <h3 align="center">Openwrt/LEDE 云编译</h3>
   <p align="center">
