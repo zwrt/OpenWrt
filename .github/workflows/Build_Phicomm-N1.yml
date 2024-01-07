@@ -215,7 +215,7 @@ jobs:
     - name: 整理固件文件
       run: |
         cd /opt/openwrt_packit/output
-        rm -rf openwrt-armvirt-64-generic-rootfs.tar.gz openwrt-armvirt-64-generic-rootfs.tar.gz.sha *.img.gz.sha
+        rm -rf openwrt-armvirt-64-generic-rootfs.tar.gz *.sha
         echo "PACKAGED_OUTPUTPATH=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
