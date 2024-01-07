@@ -17,7 +17,6 @@ env:
   DIY_P1_SH: Phicomm-N1/diy-part1.sh
   DIY_P2_SH: Phicomm-N1/diy-part2.sh
   UPLOAD_FIRMWARE: true
-  UPLOAD_RELEASE: false
   CONFIG: Phicomm-N1
   
 jobs:
@@ -73,11 +72,11 @@ jobs:
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P1_SH
         
-    - name: 更新源
-      run: cd openwrt && ./scripts/feeds update -a
-
-    - name: 安装源
-      run: cd openwrt && ./scripts/feeds install -a
+    - name: 安装 Feeds
+      run: |
+        cd openwrt
+        ./scripts/feeds update -a
+        ./scripts/feeds install -a
       
     - name: 加载自定义设置和调整配置
       run: |
@@ -111,21 +110,3 @@ jobs:
       with:
         name: ${{ env.CONFIG }}_config${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
-
-    - name: 生成发布标签
-      id: tag
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
-      run: |
-        echo "::set-output name=release_tag::$(date +"%Y.%m.%d-%H%M")"
-        touch release.txt
-        echo "status=success" >> $GITHUB_OUTPUT
-        
-    - name: 上传config文件并发布
-      uses: softprops/action-gh-release@v1
-      if: steps.tag.outputs.status == 'success' && !cancelled()
-      env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-      with:
-        tag_name: ${{ steps.tag.outputs.release_tag }}
-        body_path: release.txt
-        files: ${{ env.FIRMWARE }}/*
