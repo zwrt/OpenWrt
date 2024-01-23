@@ -50,4 +50,4 @@ git clone --depth 1 https://github.com/jerrykuku/lua-maxminddb package/lua-maxmi
 git clone --depth=1 -b main https://github.com/fw876/helloworld package/luci-app-ssr-plus
 git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall-packages package/openwrt-passwall
 git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall package/luci-app-passwall
-git_sparse_clone master https://github.com/vernesong/OpenClash luci-app-openclash
+git_sparse_clone dev https://github.com/vernesong/OpenClash luci-app-openclash
