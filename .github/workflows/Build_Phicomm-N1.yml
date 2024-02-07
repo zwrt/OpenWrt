@@ -139,67 +139,67 @@ jobs:
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
-    - name: 发布固件
-      id: release
-      uses: ncipollo/release-action@v1
-      if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
-      with:
-        name: ${{ env.DATE }} 🚫 「${{ env.FILE_NAME }}底包」
-        allowUpdates: true
-        removeArtifacts: true
-        tag: ${{ env.FILE_NAME }}
-        token: ${{ secrets.GH_TOKEN }}
-        artifacts: ${{ env.FIRMWARE }}/*
-        body: |
-          **This is Temporary Firmware for Armvirt 64**
-          ### 📒 固件信息
-          - 💻 这是 ARMv8 底包，非完整固件，不可直刷
-          - 🚀 直刷固件点击此处跳转➦[${{ env.PRODUCT_NAME }}](https://github.com/zwrt/OpenWrt/releases/tag/${{ env.PRODUCT_NAME }})即可下载
-          - ⚽ 固件源码: ${{ env.REPO_URL }}
-          - 💝 源码分支: ${{ env.REPO_BRANCH }}
-          ### 🧊 固件版本
-          - 固件编译前最后一次➦[主源码](${{ env.REPO_URL }})更新记录
-          - ${{ env.author }}
-          - ${{ env.date }}
-          - ${{ env.commit }}
-          - ${{ env.hash }}
+#    - name: 发布固件
+#      id: release
+#      uses: ncipollo/release-action@v1
+#      if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
+#      with:
+#        name: ${{ env.DATE }} 🚫 「${{ env.FILE_NAME }}底包」
+#        allowUpdates: true
+#        removeArtifacts: true
+#        tag: ${{ env.FILE_NAME }}
+#        token: ${{ secrets.GH_TOKEN }}
+#        artifacts: ${{ env.FIRMWARE }}/*
+#        body: |
+#          **This is Temporary Firmware for Armvirt 64**
+#          ### 📒 固件信息
+#          - 💻 这是 ARMv8 底包，非完整固件，不可直刷
+#          - 🚀 直刷固件点击此处跳转➦[${{ env.PRODUCT_NAME }}](https://github.com/zwrt/OpenWrt/releases/tag/${{ env.PRODUCT_NAME }})即可下载
+#          - ⚽ 固件源码: ${{ env.REPO_URL }}
+#          - 💝 源码分支: ${{ env.REPO_BRANCH }}
+#          ### 🧊 固件版本
+#          - 固件编译前最后一次➦[主源码](${{ env.REPO_URL }})更新记录
+#          - ${{ env.author }}
+#          - ${{ env.date }}
+#          - ${{ env.commit }}
+#          - ${{ env.hash }}
 
-  Package:
-    needs: [Build]
-    runs-on: ubuntu-22.04
+#  Package:
+#    needs: [Build]
+#    runs-on: ubuntu-22.04
 
-    env:
-      author: ${{ needs.Build.outputs.author }}
-      date: ${{ needs.Build.outputs.date }}
-      commit: ${{ needs.Build.outputs.commit }}
-      hash: ${{ needs.Build.outputs.hash }}
+#    env:
+#      author: ${{ needs.Build.outputs.author }}
+#      date: ${{ needs.Build.outputs.date }}
+#      commit: ${{ needs.Build.outputs.commit }}
+#      hash: ${{ needs.Build.outputs.hash }}
 
-    steps:
-    - name: 准备完成
-      uses: actions/checkout@v3
+#    steps:
+#    - name: 准备完成
+#      uses: actions/checkout@v3
 
-    - name: 设置日期
-      run: |
-        echo "DATE=$(date +"%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
+#    - name: 设置日期
+#      run: |
+#        echo "DATE=$(date +"%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
 
-    - name: 初始化系统环境
-      env:
-        DEBIAN_FRONTEND: noninteractive
-      run: |
-        docker rmi $(docker images -q)
-        sudo rm -rf /usr/share/dotnet /etc/apt/sources.list.d /usr/local/lib/android $AGENT_TOOLSDIRECTORY
-        sudo -E apt-get -y update
-        sudo -E apt-get -y install $(curl -fsSL is.gd/depends_ubuntu_2204)
-        pip install aligo
-        sudo -E apt-get -y autoremove --purge
-        sudo -E apt-get -y clean
-        sudo timedatectl set-timezone "Asia/Shanghai"
+#    - name: 初始化系统环境
+#      env:
+#        DEBIAN_FRONTEND: noninteractive
+#      run: |
+#        docker rmi $(docker images -q)
+#        sudo rm -rf /usr/share/dotnet /etc/apt/sources.list.d /usr/local/lib/android $AGENT_TOOLSDIRECTORY
+#        sudo -E apt-get -y update
+#        sudo -E apt-get -y install $(curl -fsSL is.gd/depends_ubuntu_2204)
+#        pip install aligo
+#        sudo -E apt-get -y autoremove --purge
+#        sudo -E apt-get -y clean
+#        sudo timedatectl set-timezone "Asia/Shanghai"
 
     - name: 打包openwrt
       uses: ophub/flippy-openwrt-actions@main
       if: (!cancelled())
       env:
-        OPENWRT_ARMVIRT: https://github.com/zwrt/OpenWrt/releases/download/ROOTFS/openwrt-armvirt-64-generic-rootfs.tar.gz
+        OPENWRT_ARMVIRT: openwrt/bin/targets/*/*/*.tar.gz
         PACKAGE_SOC: s905d
         WHOAMI: TIAmo
         OPENWRT_VER: ${{ github.event.inputs.openwrt_version }}
