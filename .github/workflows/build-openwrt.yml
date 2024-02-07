@@ -38,7 +38,7 @@ jobs:
       if: steps.cacheHash.outputs.cache-hit != 'true'
       run: |
         Emoji=("🎉" "🤞" "✨" "🎁" "🎈" "🎄" "🎨" "💋" "🍓" "🍕" "🍉" "💐" "🌴" "🚀" "🛸" "🗽" "⛅" "🌈" "🔥" "⛄" "🐶" "🏅" "🦄" "🐤")
-        curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data "text=${Emoji[$[$RANDOM % ${#Emoji[@]}]]} $GITHUB_REPOSITORY ${Emoji[$[$RANDOM % ${#Emoji[@]}]]} lede源码更新了" "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage"
+        curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data-urlencode "text=${Emoji[$[$RANDOM % ${#Emoji[@]}]]} $GITHUB_REPOSITORY ${Emoji[$[$RANDOM % ${#Emoji[@]}]]} %0A ${Emoji[$[$RANDOM % ${#Emoji[@]}]]} lede源码更新了 ${Emoji[$[$RANDOM % ${#Emoji[@]}]]}" "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage"
 
   Phicomm-N1:
     needs: [check]
