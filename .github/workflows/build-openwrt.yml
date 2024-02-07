@@ -276,6 +276,14 @@ jobs:
           - ${{ env.commit }}
           - ${{ env.hash }}
 
+    - name: 电报通知
+      run: |
+        MSG="
+        编译时间：${{ env.DATE }}
+        Phicomm-N1编译完成
+        "
+        curl "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${MSG}"
+
     - name: 复制文件
       run: |
         mkdir -p ./ARM_Out/
@@ -291,14 +299,6 @@ jobs:
         echo "Zip files: ${zip_files}"
         chmod +x $GITHUB_WORKSPACE/diy/aliupload.py
         python $GITHUB_WORKSPACE/diy/aliupload.py --token "${{ secrets.ALIYUN_TOKEN }}" --uploadFloder "OpenWrt/N1" --file "${zip_files}"
-
-    - name: 电报通知
-      run: |
-        MSG="
-        编译时间：${{ env.DATE }}
-        Phicomm-N1编译完成
-        "
-        curl "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${MSG}"
 
   NanoPi-R2S:
     needs: [check]
@@ -446,6 +446,14 @@ jobs:
           - ${{ env.commit }}
           - ${{ env.hash }}
 
+    - name: 电报通知
+      run: |
+        MSG="
+        编译时间：${{ env.DATE }}
+        NanoPi-R2S编译完成
+        "
+        curl "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${MSG}"
+
     - name: 复制文件
       run: |
         mkdir -p ./ARM_Out/
@@ -461,14 +469,6 @@ jobs:
         echo "Zip files: ${zip_files}"
         chmod +x $GITHUB_WORKSPACE/diy/aliupload.py
         python $GITHUB_WORKSPACE/diy/aliupload.py --token "${{ secrets.ALIYUN_TOKEN }}" --uploadFloder "OpenWrt/R2S" --file "${zip_files}"   
-
-    - name: 电报通知
-      run: |
-        MSG="
-        编译时间：${{ env.DATE }}
-        NanoPi-R2S编译完成
-        "
-        curl "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${MSG}"
 
   X86_64:
     needs: [check]
@@ -616,6 +616,14 @@ jobs:
           - ${{ env.commit }}
           - ${{ env.hash }}
 
+    - name: 电报通知
+      run: |
+        MSG="
+        编译时间：${{ env.DATE }}
+        X86_64编译完成
+        "
+        curl "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${MSG}"
+
     - name: 复制文件
       run: |
         mkdir -p ./X86_Out/
@@ -631,14 +639,6 @@ jobs:
         echo "Zip files: ${zip_files}"
         chmod +x $GITHUB_WORKSPACE/diy/aliupload.py
         python $GITHUB_WORKSPACE/diy/aliupload.py --token "${{ secrets.ALIYUN_TOKEN }}" --uploadFloder "OpenWrt/X86" --file "${zip_files}"
-
-    - name: 电报通知
-      run: |
-        MSG="
-        编译时间：${{ env.DATE }}
-        X86_64编译完成
-        "
-        curl "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${MSG}"
 
   delete:
     needs: [Phicomm-N1, NanoPi-R2S, X86_64]
