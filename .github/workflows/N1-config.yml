@@ -12,10 +12,10 @@ on:
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
-  FEEDS_CONF: Phicomm-N1/feeds.conf.default
-  CONFIG_FILE: Phicomm-N1/Phicomm-N1.config
-  DIY_P1_SH: Phicomm-N1/diy-part1.sh
-  DIY_P2_SH: Phicomm-N1/diy-part2.sh
+  FEEDS_CONF: configs/Phicomm-N1/feeds.conf.default
+  CONFIG_FILE: configs/Phicomm-N1/Phicomm-N1.config
+  DIY_P1_SH: configs/Phicomm-N1/diy-part1.sh
+  DIY_P2_SH: configs/Phicomm-N1/diy-part2.sh
   UPLOAD_FIRMWARE: true
   CONFIG: Phicomm-N1
   
