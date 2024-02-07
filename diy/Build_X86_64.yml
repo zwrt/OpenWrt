@@ -1,0 +1,188 @@
+#===============================================
+# Description: Build OpenWrt using GitHub Actions
+# Lisence: MIT
+# By：zwrt
+#===============================================
+
+name: 编译x86固件
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+  schedule:
+    - cron: 0 16 * * *
+
+env:
+  REPO_URL: https://github.com/coolsnowwolf/lede
+  REPO_BRANCH: master
+  FEEDS_CONF: configs/x86/feeds.conf.default
+  CONFIG_FILE: configs/x86/x86.config
+  DIY_P1_SH: configs/x86/diy-part1.sh
+  DIY_P2_SH: configs/x86/diy-part2.sh
+  CLASH_KERNEL: amd64
+  UPLOAD_RELEASE: true
+  FILE_NAME: X86_64
+  PRODUCT_NAME: X86_64
+
+jobs:
+  Build:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: 准备完成
+      uses: actions/checkout@v3
+      
+    - name: 检查服务器性能
+      run: |
+        cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c > CPU
+        cat /proc/cpuinfo | grep "cpu cores" | uniq >> CPU
+        sed -i 's|[[:space:]]||g; s|^.||' CPU && sed -i 's|CPU||g; s|pucores:||' CPU
+        CPUNAME="$(awk 'NR==1' CPU)" && CPUCORES="$(awk 'NR==2' CPU)"
+        curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data "text=X86_64 正在使用 [${CPUNAME} CPU]  [${CPUCORES} 核心]  [lede] 源码 编译固件,请耐心等待..." "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${MSG}"
+
+    - name: 初始化系统环境
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        docker rmi $(docker images -q)
+        sudo rm -rf /usr/share/dotnet /etc/apt/sources.list.d /usr/local/lib/android $AGENT_TOOLSDIRECTORY
+        sudo -E apt-get -y purge azure-cli ghc* zulu* llvm* firefox google* dotnet* powershell openjdk* mongodb* moby* || true
+        sudo -E apt-get -y update
+        sudo -E apt-get -y install $(cat $GITHUB_WORKSPACE/diy/depends-ubuntu-2204)
+        pip install aligo
+        sudo -E systemctl daemon-reload
+        sudo -E apt-get -y autoremove --purge
+        sudo -E apt-get -y clean
+        sudo timedatectl set-timezone "Asia/Shanghai"
+
+    - name: 克隆源代码
+      id: clone
+      run: |
+        df -hT $PWD
+        git clone $REPO_URL -b $REPO_BRANCH openwrt
+        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+        cd openwrt
+        author=$(git show -s --date=short --format="作者: %an")
+        date=$(git show -s --date=short --format="时间: %ci")
+        commit=$(git show -s --date=short --format="内容: %s")
+        hash=$(git show -s --date=short --format="hash: %H")
+        echo "author=$author" >> $GITHUB_ENV
+        echo "author=$author" >> $GITHUB_OUTPUT
+        echo "date=$date" >> $GITHUB_ENV
+        echo "date=$date" >> $GITHUB_OUTPUT
+        echo "commit=$commit" >> $GITHUB_ENV
+        echo "commit=$commit" >> $GITHUB_OUTPUT
+        echo "hash=$hash" >> $GITHUB_ENV
+        echo "hash=$hash" >> $GITHUB_OUTPUT
+
+    - name: 加载自定义源码
+      run: |
+        [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
+        chmod +x $DIY_P1_SH
+        cd openwrt
+        $GITHUB_WORKSPACE/$DIY_P1_SH
+
+    - name: 安装 Feeds
+      run: |
+        cd openwrt
+        ./scripts/feeds update -a
+        ./scripts/feeds install -a
+
+    - name: 加载自定义配置
+      run: |
+        [ -e files ] && mv files openwrt/files
+        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
+        chmod +x $GITHUB_WORKSPACE/diy/*.sh
+        chmod +x $DIY_P2_SH
+        cd openwrt
+        $GITHUB_WORKSPACE/$DIY_P2_SH
+
+    - name: 下载软件包
+      id: package
+      run: |
+        cd openwrt
+        make defconfig
+        make download -j8
+        find dl -size -1024c -exec ls -l {} \;
+        find dl -size -1024c -exec rm -f {} \;
+
+    - name: 编译固件
+      id: compile
+      run: |
+        cd openwrt
+        echo -e "$(nproc) thread compile"
+        make -j$(nproc) || make -j1 || make -j1 V=s
+        echo "status=success" >> $GITHUB_OUTPUT
+        echo "DATE=$(date +"%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
+        echo "FILE_DATE=$(date +"%Y.%m.%d")" >> $GITHUB_ENV
+
+    - name: 检查空间使用情况
+      if: (!cancelled())
+      run: df -hT
+
+    - name: 整理固件文件
+      id: organize
+      if: steps.compile.outputs.status == 'success'
+      run: |
+        cd openwrt/bin/targets/*/*
+        echo "KERNEL=$(cat *.manifest | grep ^kernel | cut -d- -f2 | tr -d ' ')" >> $GITHUB_ENV
+        rm -rf packages feeds.buildinfo openwrt-x86-64-generic-kernel.bin openwrt-x86-64-generic-squashfs-rootfs.img.gz openwrt-x86-64-generic.manifest profiles.json sha256sums version.buildinfo
+        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+        echo "status=success" >> $GITHUB_OUTPUT
+
+    - name: 发布固件
+      id: release
+      uses: ncipollo/release-action@v1
+      with:
+        name: ${{ env.DATE }} 🚫 「${{ env.PRODUCT_NAME }}固件」
+        allowUpdates: true
+        removeArtifacts: true
+        tag: ${{ env.FILE_NAME }}
+        commit: main
+        token: ${{ secrets.GH_TOKEN }}
+        artifacts: ${{ env.FIRMWARE }}/*
+        body: |
+          **This is OpenWrt Firmware for ${{ env.PRODUCT_NAME }}**
+          ### 📒 固件信息
+          - 💻 这是 ${{ env.PRODUCT_NAME }} 平台使用的 OpenWrt 固件
+          - ⚽ 固件源码: ${{ env.REPO_URL }}
+          - 💝 源码分支: ${{ env.REPO_BRANCH }}
+          - 🚀 内核版本: ${{ env.KERNEL }}
+          - 🌐 默认地址: 192.168.1.3
+          - 🔑 默认密码: password
+          ### 🧊 固件版本
+          - 固件编译前最后一次➦[主源码](${{ env.REPO_URL }})更新记录
+          - ${{ env.author }}
+          - ${{ env.date }}
+          - ${{ env.commit }}
+          - ${{ env.hash }}
+
+    - name: 电报通知
+      run: |
+        MSG="
+        编译时间：${{ env.DATE }}
+        X86_64编译完成
+        "
+        curl "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${MSG}"
+
+    - name: 复制文件
+      run: |
+        mkdir -p ./X86_Out/
+        cp -a ${{ env.FIRMWARE }}/* ./X86_Out/
+        cd X86_Out
+        mv openwrt-x86-64-generic-squashfs-combined-efi.img.gz X86-$(date +%Y%m%d).img.gz
+        zip -r $GITHUB_WORKSPACE/X86_Out/X86-$(date +%Y%m%d).zip X86-$(date +%Y%m%d).img.gz
+
+    - name: 上传Aliyun
+      run: | 
+        echo "请自动忽略META-INF文件夹。" > 忽略META-INF文件夹.txt
+        zip_files=$(find $GITHUB_WORKSPACE/X86_Out/X86* -name '*.zip' -type f -print | tr '\n' ';' | sed 's/;$//')
+        echo "Zip files: ${zip_files}"
+        chmod +x $GITHUB_WORKSPACE/diy/aliupload.py
+        python $GITHUB_WORKSPACE/diy/aliupload.py --token "${{ secrets.ALIYUN_TOKEN }}" --uploadFloder "OpenWrt/X86" --file "${zip_files}"
+    
+    - name: 删除运行记录
+      uses: Mattraks/delete-workflow-runs@v2
+      with:
+        retain_days: 0
+        keep_minimum_runs: 3
