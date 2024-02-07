@@ -27,7 +27,7 @@ sed -i "s/<%=pcdata(ver.distname)%> <%=pcdata(ver.distversion)%>/<%=pcdata(ver.d
 sed -i 's/os.date()/os.date("%Y年%m月%d日") .. " " .. translate(os.date("%A")) .. " " .. os.date("%X")/g' package/lean/autocore/files/arm/index.htm
 
 # 晶晨宝盒
-git_sparse_clone main https://github.com/ophub/luci-app-amlogic luci-app-amlogic
+git clone https://github.com/ophub/luci-app-amlogic.git package/luci-app-amlogic
 sed -i "s|firmware_repo.*|firmware_repo 'https://github.com/wrtv/OpenWrt'|g" package/luci-app-amlogic/root/etc/config/amlogic
 sed -i "s|kernel_path.*|kernel_path 'https://github.com/zwrt/kernel'|g" package/luci-app-amlogic/root/etc/config/amlogic
 sed -i "s|ARMv8|Phicomm-N1|g" package/luci-app-amlogic/root/etc/config/amlogic
