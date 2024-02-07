@@ -37,7 +37,8 @@ jobs:
     - name: Source Code Update notification
       if: steps.cacheHash.outputs.cache-hit != 'true'
       run: |
-        curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data "text=${{ env.FILE_NAME }}lede源码更新了" "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage"
+        Emoji=("🎉" "🤞" "✨" "🎁" "🎈" "🎄" "🎨" "💋" "🍓" "🍕" "🍉" "💐" "🌴" "🚀" "🛸" "🗽" "⛅" "🌈" "🔥" "⛄" "🐶" "🏅" "🦄" "🐤")
+        curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data "text=${Emoji[$[$RANDOM % ${#Emoji[@]}]]} $GITHUB_REPOSITORY ${Emoji[$[$RANDOM % ${#Emoji[@]}]]} lede源码更新了" "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage"
 
   Phicomm-N1:
     needs: [check]
@@ -72,7 +73,8 @@ jobs:
         cat /proc/cpuinfo | grep "cpu cores" | uniq >> CPU
         sed -i 's|[[:space:]]||g; s|^.||' CPU && sed -i 's|CPU||g; s|pucores:||' CPU
         CPUNAME="$(awk 'NR==1' CPU)" && CPUCORES="$(awk 'NR==2' CPU)"
-        curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data "text=Phicomm-N1 正在使用 [${CPUNAME} CPU]  [${CPUCORES} 核心] [lede] 源码 编译固件,请耐心等待..." "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${MSG}"
+        Emoji=("🎉" "🤞" "✨" "🎁" "🎈" "🎄" "🎨" "💋" "🍓" "🍕" "🍉" "💐" "🌴" "🚀" "🛸" "🗽" "⛅" "🌈" "🔥" "⛄" "🐶" "🏅" "🦄" "🐤")
+        curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data-urlencode "text=${Emoji[$[$RANDOM % ${#Emoji[@]}]]} $GITHUB_REPOSITORY ${Emoji[$[$RANDOM % ${#Emoji[@]}]]} %0A Phicomm-N1 正在使用 [${CPUNAME} CPU]  [${CPUCORES} 核心] [lede] 源码 编译固件,请耐心等待..." "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${MSG}"
 
     - name: 初始化系统环境
       env:
@@ -165,62 +167,6 @@ jobs:
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
-#    - name: 发布固件
-#      id: release
-#      uses: ncipollo/release-action@v1
-#      if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
-#      with:
-#        name: ${{ env.DATE }} 🚫 「${{ env.FILE_NAME }}底包」
-#        allowUpdates: true
-#        removeArtifacts: true
-#        tag: ${{ env.FILE_NAME }}
-#        token: ${{ secrets.GH_TOKEN }}
-#        artifacts: ${{ env.FIRMWARE }}/*
-#        body: |
-#          **This is Temporary Firmware for Armvirt 64**
-#          ### 📒 固件信息
-#          - 💻 这是 ARMv8 底包，非完整固件，不可直刷
-#          - 🚀 直刷固件点击此处跳转➦[${{ env.PRODUCT_NAME }}](https://github.com/zwrt/OpenWrt/releases/tag/${{ env.PRODUCT_NAME }})即可下载
-#          - ⚽ 固件源码: ${{ env.REPO_URL }}
-#          - 💝 源码分支: ${{ env.REPO_BRANCH }}
-#          ### 🧊 固件版本
-#          - 固件编译前最后一次➦[主源码](${{ env.REPO_URL }})更新记录
-#          - ${{ env.author }}
-#          - ${{ env.date }}
-#          - ${{ env.commit }}
-#          - ${{ env.hash }}
-
-#  Package:
-#    needs: [Build]
-#    runs-on: ubuntu-22.04
-
-#    env:
-#      author: ${{ needs.Build.outputs.author }}
-#      date: ${{ needs.Build.outputs.date }}
-#      commit: ${{ needs.Build.outputs.commit }}
-#      hash: ${{ needs.Build.outputs.hash }}
-
-#    steps:
-#    - name: 准备完成
-#      uses: actions/checkout@v3
-
-#    - name: 设置日期
-#      run: |
-#        echo "DATE=$(date +"%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
-
-#    - name: 初始化系统环境
-#      env:
-#        DEBIAN_FRONTEND: noninteractive
-#      run: |
-#        docker rmi $(docker images -q)
-#        sudo rm -rf /usr/share/dotnet /etc/apt/sources.list.d /usr/local/lib/android $AGENT_TOOLSDIRECTORY
-#        sudo -E apt-get -y update
-#        sudo -E apt-get -y install $(curl -fsSL is.gd/depends_ubuntu_2204)
-#        pip install aligo
-#        sudo -E apt-get -y autoremove --purge
-#        sudo -E apt-get -y clean
-#        sudo timedatectl set-timezone "Asia/Shanghai"
-
     - name: 打包openwrt
       uses: ophub/flippy-openwrt-actions@main
       if: (!cancelled())
@@ -278,6 +224,7 @@ jobs:
     - name: 电报通知
       run: |
         MSG="
+        ${Emoji[$[$RANDOM % ${#Emoji[@]}]]} $GITHUB_REPOSITORY ${Emoji[$[$RANDOM % ${#Emoji[@]}]]}
         编译时间：${{ env.DATE }}
         Phicomm-N1编译完成
         "
@@ -326,7 +273,8 @@ jobs:
         cat /proc/cpuinfo | grep "cpu cores" | uniq >> CPU
         sed -i 's|[[:space:]]||g; s|^.||' CPU && sed -i 's|CPU||g; s|pucores:||' CPU
         CPUNAME="$(awk 'NR==1' CPU)" && CPUCORES="$(awk 'NR==2' CPU)"
-        curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data "text=NanoPi-R2S 正在使用 [${CPUNAME} CPU]  [${CPUCORES} 核心]  [lede] 源码 编译固件,请耐心等待..." "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${MSG}"
+        Emoji=("🎉" "🤞" "✨" "🎁" "🎈" "🎄" "🎨" "💋" "🍓" "🍕" "🍉" "💐" "🌴" "🚀" "🛸" "🗽" "⛅" "🌈" "🔥" "⛄" "🐶" "🏅" "🦄" "🐤")
+        curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data-urlencode "text=${Emoji[$[$RANDOM % ${#Emoji[@]}]]} $GITHUB_REPOSITORY ${Emoji[$[$RANDOM % ${#Emoji[@]}]]} %0A NanoPi-R2S 正在使用 [${CPUNAME} CPU]  [${CPUCORES} 核心]  [lede] 源码 编译固件,请耐心等待..." "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${MSG}"
 
     - name: 初始化系统环境
       env:
@@ -447,6 +395,7 @@ jobs:
     - name: 电报通知
       run: |
         MSG="
+        ${Emoji[$[$RANDOM % ${#Emoji[@]}]]} $GITHUB_REPOSITORY ${Emoji[$[$RANDOM % ${#Emoji[@]}]]}
         编译时间：${{ env.DATE }}
         NanoPi-R2S编译完成
         "
@@ -495,7 +444,8 @@ jobs:
         cat /proc/cpuinfo | grep "cpu cores" | uniq >> CPU
         sed -i 's|[[:space:]]||g; s|^.||' CPU && sed -i 's|CPU||g; s|pucores:||' CPU
         CPUNAME="$(awk 'NR==1' CPU)" && CPUCORES="$(awk 'NR==2' CPU)"
-        curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data "text=X86_64 正在使用 [${CPUNAME} CPU]  [${CPUCORES} 核心]  [lede] 源码 编译固件,请耐心等待..." "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${MSG}"
+        Emoji=("🎉" "🤞" "✨" "🎁" "🎈" "🎄" "🎨" "💋" "🍓" "🍕" "🍉" "💐" "🌴" "🚀" "🛸" "🗽" "⛅" "🌈" "🔥" "⛄" "🐶" "🏅" "🦄" "🐤")
+        curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data-urlencode "text=${Emoji[$[$RANDOM % ${#Emoji[@]}]]} $GITHUB_REPOSITORY ${Emoji[$[$RANDOM % ${#Emoji[@]}]]} %0A X86_64 正在使用 [${CPUNAME} CPU]  [${CPUCORES} 核心]  [lede] 源码 编译固件,请耐心等待..." "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${MSG}"
 
     - name: 初始化系统环境
       env:
@@ -616,6 +566,7 @@ jobs:
     - name: 电报通知
       run: |
         MSG="
+        ${Emoji[$[$RANDOM % ${#Emoji[@]}]]} $GITHUB_REPOSITORY ${Emoji[$[$RANDOM % ${#Emoji[@]}]]}
         编译时间：${{ env.DATE }}
         X86_64编译完成
         "
