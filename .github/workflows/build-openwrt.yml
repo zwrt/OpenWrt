@@ -63,10 +63,10 @@ jobs:
 #      hash: ${{ steps.clone.outputs.hash }}
 
     steps:
-    - name: 准备完成
+    - name: 准备
       uses: actions/checkout@v4
 
-    - name: Check server configuration
+    - name: 检查服务器性能
       run: |
         cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c > CPU
         cat /proc/cpuinfo | grep "cpu cores" | uniq >> CPU
@@ -292,7 +292,7 @@ jobs:
         chmod +x $GITHUB_WORKSPACE/diy/aliupload.py
         python $GITHUB_WORKSPACE/diy/aliupload.py --token "${{ secrets.ALIYUN_TOKEN }}" --uploadFloder "OpenWrt/N1" --file "${zip_files}"
 
-    - name: Telegram notification
+    - name: 电报通知
       run: |
         MSG="
         编译时间：${{ env.DATE }}
@@ -318,10 +318,10 @@ jobs:
       PRODUCT_NAME: NanoPi-R2S
 
     steps:
-    - name: 准备完成
+    - name: 准备
       uses: actions/checkout@v4
       
-    - name: Check server configuration
+    - name: 检查服务器性能
       run: |
         cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c > CPU
         cat /proc/cpuinfo | grep "cpu cores" | uniq >> CPU
@@ -462,7 +462,7 @@ jobs:
         chmod +x $GITHUB_WORKSPACE/diy/aliupload.py
         python $GITHUB_WORKSPACE/diy/aliupload.py --token "${{ secrets.ALIYUN_TOKEN }}" --uploadFloder "OpenWrt/R2S" --file "${zip_files}"   
 
-    - name: Telegram notification
+    - name: 电报通知
       run: |
         MSG="
         编译时间：${{ env.DATE }}
@@ -491,7 +491,7 @@ jobs:
     - name: 准备完成
       uses: actions/checkout@v4
       
-    - name: Check server configuration
+    - name: 检查服务器性能
       run: |
         cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c > CPU
         cat /proc/cpuinfo | grep "cpu cores" | uniq >> CPU
@@ -632,7 +632,7 @@ jobs:
         chmod +x $GITHUB_WORKSPACE/diy/aliupload.py
         python $GITHUB_WORKSPACE/diy/aliupload.py --token "${{ secrets.ALIYUN_TOKEN }}" --uploadFloder "OpenWrt/X86" --file "${zip_files}"
 
-    - name: Telegram notification
+    - name: 电报通知
       run: |
         MSG="
         编译时间：${{ env.DATE }}
