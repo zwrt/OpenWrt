@@ -75,7 +75,8 @@ jobs:
         sed -i 's|[[:space:]]||g; s|^.||' CPU && sed -i 's|CPU||g; s|pucores:||' CPU
         CPUNAME="$(awk 'NR==1' CPU)" && CPUCORES="$(awk 'NR==2' CPU)"
         Emoji=("🎉" "🤞" "✨" "🎁" "🎈" "🎄" "🎨" "💋" "🍓" "🍕" "🍉" "💐" "🌴" "🚀" "🛸" "🗽" "⛅" "🌈" "🔥" "⛄" "🐶" "🏅" "🦄" "🐤")
-        curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data-urlencode "text=${Emoji[$[$RANDOM % ${#Emoji[@]}]]} $GITHUB_REPOSITORY ${Emoji[$[$RANDOM % ${#Emoji[@]}]]} %0A Phicomm-N1 正在使用 [${CPUNAME} CPU]  [${CPUCORES} 核心] [lede] 源码 编译固件,请耐心等待..." "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${MSG}"
+        curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data "text=${Emoji[$[$RANDOM % ${#Emoji[@]}]]} $GITHUB_REPOSITORY ${Emoji[$[$RANDOM % ${#Emoji[@]}]]}
+        Phicomm-N1 正在使用 [${CPUNAME} CPU]  [${CPUCORES} 核心] [lede] 源码 编译固件,请耐心等待..." "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${MSG}"
 
     - name: 初始化系统环境
       env:
@@ -289,7 +290,8 @@ jobs:
         sed -i 's|[[:space:]]||g; s|^.||' CPU && sed -i 's|CPU||g; s|pucores:||' CPU
         CPUNAME="$(awk 'NR==1' CPU)" && CPUCORES="$(awk 'NR==2' CPU)"
         Emoji=("🎉" "🤞" "✨" "🎁" "🎈" "🎄" "🎨" "💋" "🍓" "🍕" "🍉" "💐" "🌴" "🚀" "🛸" "🗽" "⛅" "🌈" "🔥" "⛄" "🐶" "🏅" "🦄" "🐤")
-        curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data-urlencode "text=${Emoji[$[$RANDOM % ${#Emoji[@]}]]} $GITHUB_REPOSITORY ${Emoji[$[$RANDOM % ${#Emoji[@]}]]} %0A NanoPi-R2S 正在使用 [${CPUNAME} CPU]  [${CPUCORES} 核心]  [lede] 源码 编译固件,请耐心等待..." "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${MSG}"
+        curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data "text=${Emoji[$[$RANDOM % ${#Emoji[@]}]]} $GITHUB_REPOSITORY ${Emoji[$[$RANDOM % ${#Emoji[@]}]]}
+        NanoPi-R2S 正在使用 [${CPUNAME} CPU]  [${CPUCORES} 核心]  [lede] 源码 编译固件,请耐心等待..." "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${MSG}"
 
     - name: 初始化系统环境
       env:
@@ -460,7 +462,8 @@ jobs:
         sed -i 's|[[:space:]]||g; s|^.||' CPU && sed -i 's|CPU||g; s|pucores:||' CPU
         CPUNAME="$(awk 'NR==1' CPU)" && CPUCORES="$(awk 'NR==2' CPU)"
         Emoji=("🎉" "🤞" "✨" "🎁" "🎈" "🎄" "🎨" "💋" "🍓" "🍕" "🍉" "💐" "🌴" "🚀" "🛸" "🗽" "⛅" "🌈" "🔥" "⛄" "🐶" "🏅" "🦄" "🐤")
-        curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data-urlencode "text=${Emoji[$[$RANDOM % ${#Emoji[@]}]]} $GITHUB_REPOSITORY ${Emoji[$[$RANDOM % ${#Emoji[@]}]]} %0A X86_64 正在使用 [${CPUNAME} CPU]  [${CPUCORES} 核心]  [lede] 源码 编译固件,请耐心等待..." "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${MSG}"
+        curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data-urlencode "text=${Emoji[$[$RANDOM % ${#Emoji[@]}]]} $GITHUB_REPOSITORY ${Emoji[$[$RANDOM % ${#Emoji[@]}]]}
+        X86_64 正在使用 [${CPUNAME} CPU]  [${CPUCORES} 核心]  [lede] 源码 编译固件,请耐心等待..." "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${MSG}"
 
     - name: 初始化系统环境
       env:
