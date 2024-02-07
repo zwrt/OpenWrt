@@ -9,10 +9,10 @@ on:
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
-  FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: x86/x86.config
-  DIY_P1_SH: x86/diy-part1.sh
-  DIY_P2_SH: x86/diy-part2.sh
+  FEEDS_CONF: configs/x86/feeds.conf.default
+  CONFIG_FILE: configs/x86/x86.config
+  DIY_P1_SH: configs/x86/diy-part1.sh
+  DIY_P2_SH: configs/x86/diy-part2.sh
   CLASH_KERNEL: amd64
   UPLOAD_RELEASE: true
   FILE_NAME: X86_64
@@ -97,8 +97,6 @@ jobs:
         chmod +x $DIY_P2_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH
-        $GITHUB_WORKSPACE/diy/preset-clash-core.sh $CLASH_KERNEL
-        $GITHUB_WORKSPACE/diy/preset-terminal-tools.sh
 
     - name: 下载软件包
       id: package
@@ -129,7 +127,7 @@ jobs:
       run: |
         cd openwrt/bin/targets/*/*
         echo "KERNEL=$(cat *.manifest | grep ^kernel | cut -d- -f2 | tr -d ' ')" >> $GITHUB_ENV
-        rm -rf packages config.buildinfo feeds.buildinfo openwrt-x86-64-generic-kernel.bin openwrt-x86-64-generic-squashfs-rootfs.img.gz openwrt-x86-64-generic.manifest profiles.json sha256sums version.buildinfo
+        rm -rf packages feeds.buildinfo openwrt-x86-64-generic-kernel.bin openwrt-x86-64-generic-squashfs-rootfs.img.gz openwrt-x86-64-generic.manifest profiles.json sha256sums version.buildinfo
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
