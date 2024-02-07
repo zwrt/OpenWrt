@@ -40,6 +40,8 @@ jobs:
         curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data "text=${{ env.FILE_NAME }}lede源码更新了" "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage"
 
   Phicomm-N1:
+    needs: [check]
+    if: ${{ needs.Checka.outputs.output != 'hello'}}
     name: 编译Phicomm-N1固件
     runs-on: ubuntu-22.04
     env:
@@ -299,6 +301,8 @@ jobs:
         curl "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${MSG}"
 
   NanoPi-R2S:
+    needs: [check]
+    if: ${{ needs.Checka.outputs.output != 'hello'}}
     name: 编译R2S固件
     runs-on: ubuntu-22.04
     env:
@@ -467,6 +471,8 @@ jobs:
         curl "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${MSG}"
 
   X86_64:
+    needs: [check]
+    if: ${{ needs.Checka.outputs.output != 'hello'}}
     name: 编译x86固件
     runs-on: ubuntu-22.04
     env:
@@ -635,8 +641,8 @@ jobs:
         curl "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${MSG}"
 
   delete:
-    runs-on: ubuntu-latest
     needs: [Phicomm-N1, NanoPi-R2S, X86_64]
+    runs-on: ubuntu-latest
     
     steps:
       - name: 删除运行记录
