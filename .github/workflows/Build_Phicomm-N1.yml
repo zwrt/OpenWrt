@@ -248,7 +248,7 @@ jobs:
           - ${{ env.commit }}
           - ${{ env.hash }}
 
-    - name: Telegram notification
+    - name: 电报通知
       run: |
         MSG="
         编译时间：${{ env.DATE }}
