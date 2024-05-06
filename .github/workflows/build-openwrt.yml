@@ -174,7 +174,7 @@ jobs:
         WHOAMI: TIAmo
         OPENWRT_VER: ${{ github.event.inputs.openwrt_version }}
         DISTRIB_REVISION: ${OPENWRT_VER} (By @TIAmo build $(TZ=UTC-8 date "+%Y-%m-%d %H:%M"))
-        KERNEL_REPO_URL: https://github.com/zwrt/kernel/releases/tag/kernel_stable
+        KERNEL_REPO_URL: zwrt/kernel
         KERNEL_VERSION_NAME: 5.15.13
         KERNEL_AUTO_LATEST: true
         GZIP_IMGS: .gz
