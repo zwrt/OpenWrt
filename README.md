@@ -1,7 +1,7 @@
 ⏰ **Openwrt/LEDE 云编译**
 
 <p align="center">
-  <a href="https://github.com/djzng/OpenWrt">
+  <a href="https://github.com/zwrt/OpenWrt">
     <img src="./diy/action.jpg" alt="Logo" width="400" />
   </a>
   <p align="center">
